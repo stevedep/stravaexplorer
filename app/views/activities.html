@@ -1,0 +1,52 @@
+﻿<div class='form-group row'>
+    <div class="col-xs-12"><h1>{{ rc.ride.name}}</h1></div>
+    <div class="col-xs-12"><h2>{{ rc.ride.location_city}}<h3></div>
+    <div class="col-xs-4"><h3>Distance</h3></div><div class="col-xs-8"><h3>{{ (rc.ride.distance / 1000 ).toFixed(1) }} km</h3></div>
+    <div class="col-xs-4"><h3>Duration</h3></div><div class="col-xs-8"><h3>{{ rc.ride.duration | date:'HH:mm' }}</h3></div>
+    <div class="col-xs-4"><h3>Average speed</h3></div><div class="col-xs-8"><h3>{{ ((rc.ride.distance / 1000) / (rc.ride.elapsed_time / 3600 )).toFixed(1) }} km/h</h3></div>
+</div>
+
+<div id="chartContainer"></div>
+
+<!-- <select ng-model='distanceFilter'> -->
+<div class="form-group row">
+    <label class="col-xs-4 col-form-label" for="distanceFilter">Distance Filter</label>
+    <div class="col-xs-8" >
+        <select id="distanceFilter" class="form-control" ng-model="rc.distanceFilter" 
+        ng-options='f as f.label for f in rc.distanceFilters track by f.value'>
+        </select>
+    </div>
+</div>
+<div class="form-group row">
+    <label class="col-xs-4 col-form-label" for="distanceFilter">Gradient Filter</label>
+    <div class="col-xs-8" >
+        <select id="fradientFilter" class="form-control" ng-model="rc.gradientFilter" 
+        ng-options='f as f.label for f in rc.gradientFilters track by f.value'>
+        </select>
+    </div>
+</div>
+
+
+<table id="mySegmentsTable" class="table">
+    <thead>
+        <tr>
+            <th>id</th>
+            <th>Name</th>
+            <th>Time</th>
+            <th>Distance</th>
+            <th>Average Speed</th>
+            <th>Gradient</th>
+        </tr>
+    </thead>
+    <tr ng-repeat="s in rc.ride.segment_efforts" ng-show="s.distance > rc.distanceFilter.value && s.segment.average_grade > rc.gradientFilter.value">
+        <td>{{ s.segment.id }}</td>
+        <td>{{ s.name.slice(0,32) }}{{ s.name.length > 32 ? '...' : '' }}</td>
+        <td>{{ s.elapsed_time }}s</td>
+        <td>{{ (s.distance / 1000).toFixed(2) }} km</td>
+        <td>{{ ((s.distance / 1000) / (s.elapsed_time / 3600 )).toFixed(1) }}km/h</td>
+        <td>{{ s.segment.average_grade }}%</td>
+        <td>{{ s.pr_rank > 0 ? '#' : ''}}{{ s.pr_rank }}</td>
+
+    </tr>
+
+</table>

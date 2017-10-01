@@ -1,0 +1,45 @@
+﻿<div>
+    <div id='athlete-header'>
+        <div class="col-sm-7">
+            <h3></h3>
+        </div>
+        <div class="col-sm-5 pagination-nav">
+            <span ng-click="ac.previousPage()" ng-class="ac.page < 2 ? 'disabled' : 'active'">
+                <span ng-model='ac.activityItems' class="glyphicon glyphicon-chevron-left" ></span>
+            </span>
+            <span>Showing {{ (((ac.page-1) * ac.per_page )+1) || 0}} - {{ (ac.page * ac.per_page) || 0 }} activities</span>
+            <span ng-click="ac.nextPage()" class='active'>
+                <span ng-model='ac.activityItems' class="glyphicon glyphicon-chevron-right"></span>
+            </span>
+        </div>
+    </div>
+
+    <table id="activitiesTable" class="table">
+        <thead>
+            <tr>
+                <th class="col-sm-1">
+                <th class="col-sm-1"></th>
+                <th class="col-sm-2">Date</th>
+                <th class="col-sm-4 ">Name</th>
+                <th class="col-sm-1">Distance</th>
+                <th class="col-sm-1">Avg Speed</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tr ng-repeat="r in ac.activities" ng-show="$index < 100">
+            <td>{{ ((ac.page-1) * ac.per_page) + $index + 1 }}</td>
+            <td>
+                <span class="fa" aria-hidden="true" ng-class="{ Ride: 'fa-bicycle' }[ r.type ]"></span>
+                {{ r.type == 'Ride' ? '' : r.type }}
+            </td>
+            <td>{{ r.start_date | date }}</td>
+            <td class='ellipsis'>{{ r.name }}</td>
+            <td>{{ (r.distance / 1000).toFixed(2) }} km</td>
+            <td>{{ ((r.distance / 1000 ) / (r.elapsed_time / 3600)).toFixed(1)  }}km/h</td>
+            <td><div three-star stars="{{ r.achievement_count / 3}}"></div></td>
+            <td><a href="#/activity/{{r.id}}"><span class="glyphicon glyphicon-stats"></span></a></td>
+        </tr>
+
+    </table>
+</div>

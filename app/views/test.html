@@ -1,0 +1,33 @@
+﻿
+<div class='form-group row'>
+    <div class="col-xs-12"><h1>{{ ac.leaderboard.length}}</h1></div>
+</div>
+
+
+<table id="activitiesTable" class="table">
+<tr ng-repeat="n in ac.leaderboard">
+    <td>{{ n.idd }}</td>
+    <td>{{ n.segmentname }}</td>
+    <td>{{ n.entries[0].athlete_name }}</td>
+    <td>{{ n.entries[0].distance }}</td>
+    <td>{{ n.entries[0].elapsed_time  }}</td>
+    <td>{{ (((n.entries[0].distance / n.entries[0].elapsed_time) * 3600)/1000  ) }}</td>
+
+</tr>
+</table>
+
+<div ng-app="myApp" ng-controller="MyController">
+    <ng-map center="[-26.1367035,124.2706638]" zoom="5"></ng-map>
+</div>
+
+<script>
+    var myApp = angular.module('myApp', ['ngMap']);
+    myApp.controller('MyController', function(NgMap) {
+        NgMap.getMap().then(function(map) {
+            console.log(map.getCenter());
+            console.log('markers', map.markers);
+            console.log('shapes', map.shapes);
+        });
+    });
+
+</script>

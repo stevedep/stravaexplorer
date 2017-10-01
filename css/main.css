@@ -1,0 +1,34 @@
+body {
+	padding-top: 50px;
+	padding-bottom: 20px;
+}
+
+
+#athlete-header {
+	height: 60px;
+}
+
+.pagination-nav {
+	line-height: 60px;
+}
+
+.gold-star {
+    color: gold;
+}
+
+
+.pagination-nav .active {
+	cursor: pointer;
+}
+
+.pagination-nav .disabled {
+	cursor: default;
+	color: #ccc;
+}
+
+.ellipsis {
+	max-width: 0;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
