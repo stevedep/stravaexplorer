@@ -6,7 +6,7 @@
     function AthleteFactory($http) {
 
         var athleteId = "13077";
-        var accessToken = "b39f139a27a98749674c44b550aabb87c9a8b020";
+        var accessToken = "";
 
         var gotActivities = false;
 
