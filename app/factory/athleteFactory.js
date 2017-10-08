@@ -3,10 +3,10 @@
 
     app.factory('AthleteFactory', AthleteFactory);
 
-    function AthleteFactory($http) {
+    function AthleteFactory($http, $q) {
 
         var athleteId = "13077";
-        var accessToken = "";
+        var accessToken = "b39f139a27a98749674c44b550aabb87c9a8b020";
 
         var gotActivities = false;
 
@@ -51,45 +51,42 @@
                 });
             }
 
-        function getSegmentsExplore() {
-            return $http({
-                method: 'JSONP',
-                url: "https://www.strava.com/api/v3/segments/explore"
-                + "?bounds=51.389506,5.329227,51.505477,5.580883"
-                + "&access_token=" + accessToken
-                + "&callback=JSON_CALLBACK"
-            });
+        function getSegmentsExplore(areas) {
+            var promises = [];
+            var count=0;
+            while (count < areas.length) { //y
+                promises.push($http({
+                    method: 'JSONP',
+                    url: "https://www.strava.com/api/v3/segments/explore"
+                    + "?bounds="+areas[count].swla+","+areas[count].swlng+","+areas[count].nela+","+areas[count].nelng
+                    + "&activity_type=riding"
+                    + "&max_cat=0"
+                    + "&access_token=" + accessToken
+                    + "&callback=JSON_CALLBACK"
+                }))
+                count++
+            }
+            return $q.all(promises)
+                .then(function(response) {
+                  //  console.log(JSON.stringify(response));
+                    return response;
+                })
         }
 
-        function getLeaderboard(segmentobject) {
-            //console.log("segmentid:" + segmentid);
-/*
-            $http({
-                method: 'GET',
-                url: '/someUrl'
-            }).then(function successCallback(response) {
-                // this callback will be called asynchronously
-                // when the response is available
-            }, function errorCallback(response) {
-                // called asynchronously if an error occurs
-                // or server returns response with an error status.
-            });
-*/
 
+        function getLeaderboard(segmentobject) {
             return $http({
                 method: 'JSONP',
                  url: "https://www.strava.com/api/v3/segments/"+ segmentobject.id +"/leaderboard"
                 + "?access_token=" + accessToken + "&per_page=2"
                  + "&callback=JSON_CALLBACK",
                 idd: segmentobject.id,
-                segmentname: segmentobject.name
+                segmentname: segmentobject.name,
+                pos : segmentobject.start_latlng,
+                points : segmentobject.points
             });
 
         }
-
-
-
-
     }
 
 })();
