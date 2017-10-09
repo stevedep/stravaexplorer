@@ -14,6 +14,7 @@
             getActivities: getActivities,
             getSegments: getSegments,
             getInfo : getInfo,
+            getWind : getWind,
             getSegmentsExplore : getSegmentsExplore,
             getLeaderboard : getLeaderboard
         };
@@ -60,7 +61,7 @@
                     url: "https://www.strava.com/api/v3/segments/explore"
                     + "?bounds="+areas[count].swla+","+areas[count].swlng+","+areas[count].nela+","+areas[count].nelng
                     + "&activity_type=riding"
-                    + "&max_cat=0"
+                    + "&max_cat=1"
                     + "&access_token=" + accessToken
                     + "&callback=JSON_CALLBACK"
                 }))
@@ -83,10 +84,21 @@
                 idd: segmentobject.id,
                 segmentname: segmentobject.name,
                 pos : segmentobject.start_latlng,
-                points : segmentobject.points
+                points : segmentobject.points,
+                start_latlng : segmentobject.start_latlng,
+                end_latlng : segmentobject.end_latlng
             });
 
         }
+
+        function getWind(lat, long) {
+            return $http({
+                method: 'get',
+                url: "http://api.openweathermap.org/data/2.5/weather?lat="+lat+"&lon="+long+"&APPID=58e9ba1a496bd20f7e11bfd8464c06c7"
+            });
+
+        }
+
     }
 
 })();

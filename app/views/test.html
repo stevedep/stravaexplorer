@@ -1,25 +1,28 @@
 ﻿
 <div class='form-group row'>
     <div class="col-xs-12">
-    <h1>{{ ac.segments.length}}</h1></div>
+    <h1>{{ ac.wind }}</h1></div>
 </div>
 </div>
 <table><tr valign="top"><td valign="top">
     <button ng-click="ac.getbounds()" >Get Segments</button>
-    <button ng-click="ac.reset()" >Test</button>
-    <ng-map id="foomap" style="height:800px;width:800px;"
-            on-click="onClick()" center={{ac.center}} zoom="14">
-        <marker ng-repeat="s in ac.selection" position="{{s.pos}}" title="{{s.segmentname}}"></marker>
-        <marker ng-repeat="s in ac.leaderboard | filter:speedf" position="{{s.pos}}" title="{{
-s.segmentname }}"></marker>
-
+    <button ng-click="ac.test2()" >Test</button>
+    <ng-map id="foomap" style="height:800px;width:800px;" center={{ac.center}} zoom="14">
+        <marker id={{s.idd}} ng-repeat="s in ac.leaderboard | filter:speedf" position="{{s.pos}}"  title="{{s.segmentname }}" on-click="showCity(event, s)"></marker>
+        <info-window id="myInfoWindow" >
+            <div ng-non-bindable>
+                <h4>{{selectedCity.segmentname}}</h4>
+                <br>
+                {{ (((selectedCity.entries[0].distance / selectedCity.entries[0].elapsed_time) * 3600)/1000  ).toFixed(2) }}
+            </div>
+        </info-window>
         <shape ng-repeat="s in ac.leaderboard | filter:speedf" name="polyline" path="{{s.points}}" geodesic="true" stroke-color="rgb(0,{{
 
 (((speedval - (((s.entries[0].distance / s.entries[0].elapsed_time) * 3600)/1000  ).toFixed(2)) /
     (speedval - minspeedval)) * 255).toFixed(0).toString()
         }},0)" stroke-opacity="1.0" stroke-weight="2">
         </shape>
-        <!--
+
           <shape ng-repeat="a in ac.area" name="rectangle"
                  stroke-color="#FF0000"
                  stroke-opacity="0.8"
@@ -31,8 +34,7 @@ s.segmentname }}"></marker>
              [{{a.nela}}, {{a.nelng}}]
            ]">
           </shape>
-          //-->
-    </ng-map>
+        </ng-map>
 </td><td>
     <md-slider-container>
         <span>Min Speed</span>
@@ -63,10 +65,10 @@ s.segmentname }}"></marker>
         </md-input-container>
     </md-slider-container>
     <md-slider-container>
-        <span>Max Elevation</span>
-        <md-slider flex="" min="0" max="300" default="100" ng-model="maxelaval" aria-label="red" id="red-slider"></md-slider>
+        <span>Minimal windsupport</span>
+        <md-slider flex="" min="0" max="100" ng-model="minwindsupport" aria-label="red" id="red-slider"></md-slider>
         <md-input-container>
-            <input flex="" type="number" ng-model="maxelaval" aria-label="red" aria-controls="red-slider">
+            <input flex="" type="number" ng-model="minwindsupport" aria-label="red" aria-controls="red-slider">
         </md-input-container>
     </md-slider-container>
 
@@ -79,8 +81,8 @@ s.segmentname }}"></marker>
             <td><a href="https://www.strava.com/segments/{{n.idd}}">{{ n.segmentname }}</a></td>
             <td>{{ n.entries[0].distance }}</td>
             <td>{{ (((n.entries[0].distance / n.entries[0].elapsed_time) * 3600)/1000  ).toFixed(2) }}</td>
-<td>{{ n.start_latlng
-    }}</td>
+<td>{{ n.windsupport  }}
+    </td>
         </tr>
     </table></td></tr></table>
 

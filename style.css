@@ -1,4 +1,21 @@
 /* Styles go here */
+.h1 {
+    color: #fff;
+    font-family: 'Righteous', cursive; font-size: 65px; font-weight: normal; line-height: 60px; margin: 10px 0 20px; text-transform: uppercase; margin: 10px 0 24px; text-align: center; }
+
+.ng-map-info-window {
+    background-color: navy;
+    color: #fff;
+}
+.ng-map-info-window div:first-child > div:nth-child(1) {
+    border-top-color: navy !important;
+}
+.ng-map-info-window div:first-child > div:nth-child(3) div {
+    background-color: transparent !important;
+}
+.ng-map-info-window div:first-child > div:nth-child(4) {
+    background-color: transparent !important;
+}
 
 .features-table {
     width: 400px;
