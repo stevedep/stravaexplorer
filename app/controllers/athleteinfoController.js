@@ -6,7 +6,7 @@
     function AthleteInfoController($scope, AthleteFactory, NgMap) {
 
         var that = this;
-        that.wind = 270;
+        that.wind;
         that.athleteInfo;
         that.segments = [];
         that.test = [];
@@ -81,8 +81,8 @@
             //console.log($scope.segments);
             //console.log(that.segments.length);
             //console.log('start');
-            //AthleteFactory.getWind(51.446757, 5.43491)
-            //    .then(UpdateWind)
+            AthleteFactory.getWind(51.446757, 5.43491)
+                .then(UpdateWind)
             NgMap.getMap().then(function (map) {
                 that.positions = [];
                 that.eara = [];
@@ -156,13 +156,19 @@
                 if (dist > $scope.mindistval && dist < $scope.maxdistval) {
                     AthleteFactory.getLeaderboard(that.segments[count])
                         .then(function updateLeaderboard(response, headers) {
+                            var direction = (google.maps.geometry.spherical.computeHeading(new google.maps.LatLng(response.config.end_latlng[0],response.config.end_latlng[1]), new google.maps.LatLng(response.config.start_latlng[0],response.config.start_latlng[1]))).toFixed(0);
+                            if (direction < 0) {
+                                direction = 360 + direction;
+                            }
                             var newJson = $.extend({},
                                 {idd: response.config.idd},
                                 {segmentname: response.config.segmentname},
+                                {sdistance: response.config.sdistance},
                                 {pos: response.config.pos},
                                 {start_latlng: response.config.start_latlng},
                                 {end_latlng: response.config.end_latlng},
-                                { windsupport : ((1 - (Math.abs((that.wind - that.bearing(response.config.start_latlng[0],response.config.start_latlng[1],response.config.end_latlng[0],response.config.end_latlng[1]))))/360)* 100).toFixed(0)},
+                                { windsupport : ((1 - (Math.abs((that.wind - (direction))))/360)* 100).toFixed(0)},
+                                { direction : direction},
                                 {points2: response.config.points},
                                 {points: that.createpath2(JSON.stringify(google.maps.geometry.encoding.decodePath(response.config.points)))}
                                 , response.data);
@@ -220,8 +226,17 @@
         };
 
         that.test2 = function() {
-            AthleteFactory.getWind(51.446757, 5.43491)
-                .then(UpdateWind)
+            //console.log(that.bearing(51.3992,5.33873,51.384894,5.323158));
+            //var path = [[51.3992,5.33873], [51.384894,5.323158]];
+            var path = [];
+            path.push(new google.maps.LatLng(51.3992,5.33873));
+            path.push(new google.maps.LatLng(51.384894,5.323158));
+
+            var heading = google.maps.geometry.spherical.computeHeading(path[0], path[1]);
+            console.log(heading);
+            console.log(360 + google.maps.geometry.spherical.computeHeading(new google.maps.LatLng(51.3992,5.33873), new google.maps.LatLng(51.384894,5.323158)))
+            // AthleteFactory.getWind(51.446757, 5.43491)
+           //     .then(UpdateWind)
         };
 
         function UpdateWind(response) {

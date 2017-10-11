@@ -79,12 +79,13 @@
             return $http({
                 method: 'JSONP',
                  url: "https://www.strava.com/api/v3/segments/"+ segmentobject.id +"/leaderboard"
-                + "?access_token=" + accessToken + "&per_page=2"
+                + "?access_token=" + accessToken + "&per_page=6"
                  + "&callback=JSON_CALLBACK",
                 idd: segmentobject.id,
                 segmentname: segmentobject.name,
                 pos : segmentobject.start_latlng,
                 points : segmentobject.points,
+                sdistance : segmentobject.distance,
                 start_latlng : segmentobject.start_latlng,
                 end_latlng : segmentobject.end_latlng
             });

@@ -8,12 +8,22 @@
     <button ng-click="ac.getbounds()" >Get Segments</button>
     <button ng-click="ac.test2()" >Test</button>
     <ng-map id="foomap" style="height:800px;width:800px;" center={{ac.center}} zoom="14">
-        <marker id={{s.idd}} ng-repeat="s in ac.leaderboard | filter:speedf" position="{{s.pos}}"  title="{{s.segmentname }}" on-click="showCity(event, s)"></marker>
+        <marker id={{s.idd}} ng-repeat="s in ac.leaderboard | filter:speedf" position="{{s.pos}}"  title="{{s.segmentname }}" on-click="showCity(event, s)" icon="https://mt.googleapis.com/vt/icon/name=icons/onion/39-cycling.png"></marker>
         <info-window id="myInfoWindow" >
             <div ng-non-bindable>
                 <h4>{{selectedCity.segmentname}}</h4>
                 <br>
-                {{ (((selectedCity.entries[0].distance / selectedCity.entries[0].elapsed_time) * 3600)/1000  ).toFixed(2) }}
+
+                <table class="features-table" id="timeTable" class="table">
+                    <tr ng-repeat="n in selectedCity.entries | orderBy : '-(((n.distance / n.elapsed_time) * 3600)/1000  ).toFixed(2)'">
+                        <td>{{ n.athlete_name }}</td>
+                        <td>{{ n.distance }}</td>
+                        <td>{{ n.elapsed_time}}</td>
+                        <td>{{ (((selectedCity.sdistance / n.elapsed_time) * 3600)/1000  ).toFixed(2) }}</td>
+                        </td>
+                    </tr>
+                </table>
+
             </div>
         </info-window>
         <shape ng-repeat="s in ac.leaderboard | filter:speedf" name="polyline" path="{{s.points}}" geodesic="true" stroke-color="rgb(0,{{
@@ -45,7 +55,7 @@
     </md-slider-container>
     <md-slider-container>
         <span>Max Speed</span>
-        <md-slider flex="" min="25" max="55" default="45" ng-model="speedval" aria-label="red" id="red-slider"></md-slider>
+        <md-slider flex="" min="25" max="70" default="45" ng-model="speedval" aria-label="red" id="red-slider"></md-slider>
         <md-input-container>
             <input flex="" type="number" ng-model="speedval" aria-label="red" aria-controls="red-slider">
         </md-input-container>
@@ -79,10 +89,10 @@
                     ng-checked="0"
                     ng-click="ac.toggleSelection(n)" /></td>
             <td><a href="https://www.strava.com/segments/{{n.idd}}">{{ n.segmentname }}</a></td>
-            <td>{{ n.entries[0].distance }}</td>
+            <td>{{ n.windsupport }}</td>
+           <!-- <td>{{ n.direction }}</td> /-->
+
             <td>{{ (((n.entries[0].distance / n.entries[0].elapsed_time) * 3600)/1000  ).toFixed(2) }}</td>
-<td>{{ n.windsupport  }}
-    </td>
         </tr>
     </table></td></tr></table>
 
