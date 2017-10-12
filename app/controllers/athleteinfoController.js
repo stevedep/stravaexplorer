@@ -15,6 +15,7 @@
         that.area=[];
         that.positions = [];
         that.leaderboard = [];
+        that.gehad = [];
         that.center = "[51.438559, 5.414102]";
         that.athleteInfo = [];
 
@@ -65,19 +66,13 @@
             }
         }
 
-        that.GetWindSupport = function(n) {
-            console.log(that.wind )
-            console.log(Math.abs((that.wind - that.bearing(n.end_latlng[0],n.end_latlng[1],n.start_latlng[0],n.start_latlng[1]))))
-            console.log(that.bearing(n.end_latlng[0],n.end_latlng[1],n.start_latlng[0],n.start_latlng[1]) )
-
-            return Math.abs((that.wind - that.bearing(n.end_latlng[0],n.end_latlng[1],n.start_latlng[0],n.start_latlng[1])))
-        }
 
         that.getbounds  = function(){
             //console.log(that.segments.length);
             that.segments.length = 0;
             that.leaderboard.length = 0;
             that.area=[];
+            that.behandeld=[];
             //console.log($scope.segments);
             //console.log(that.segments.length);
             //console.log('start');
@@ -91,14 +86,12 @@
                 var swlng = parseFloat(map.getBounds().b.b.toString());
                 var nela = parseFloat(map.getBounds().f.f.toString());
                 var nelng = parseFloat(map.getBounds().b.f.toString());
-                var swlai = parseFloat(map.getBounds().f.b.toString());
-                var swlngi = parseFloat(map.getBounds().b.b.toString());
                 var nelai = parseFloat(map.getBounds().f.f.toString());
                 var nelngi = parseFloat(map.getBounds().b.f.toString());
                 var countt = 0;
                 var countlat = 0;
                 var countlng = 0;
-                var stuks = 2;
+                var stuks = 6;
                 var latinc = (swla-nela)/stuks;
                 var lnginc = (swlng-nelng)/stuks;
                 //vm.PopulateSegments(swla, swlng, nela,nelng);
@@ -112,7 +105,9 @@
                     while (countlat < stuks){ //y
                         swla +=  latinc;
                         nela +=  latinc;
-                        that.area.push({ swla: swla, swlng : swlng, nela : nela,nelng : nelng});
+                        console.log( " swla: " + swla + "swlng : " + swlng + "nela : "  + nela  + " nelng: " +   nelng);
+
+                        that.area.push({ swla: swla - ((nela - swla)*2/3), swlng : swlng - ((nelng-swlng)*2/3), nela : nela,nelng : nelng});
                         countlat++;
                         countt++;
                     }
@@ -129,19 +124,24 @@
 
         }
 
+        function UpdateWind(response) {
+            // console.log(JSON.stringify(response.data.wind.deg));
+            that.wind = JSON.stringify(response.data.wind.deg);
+        }
+
         $scope.showCity = function(event, city) {
             $scope.selectedCity = city;
             $scope.map.showInfoWindow('myInfoWindow', this);
         };
 
-                            that.pinClicked = function(events, s) {
-                                console.log(s);
-                                that.selection.push(s);
-                              /*  var pos = marker.$index;
-                                NgMap.getMap().then(function (map) {
-                                    console.log('the marker ->' + (map.markers[pos].b.s) + ' was clicked');
-                                });*/
-                            }
+        that.pinClicked = function(events, s) {
+            console.log(s);
+            that.selection.push(s);
+          /*  var pos = marker.$index;
+            NgMap.getMap().then(function (map) {
+                console.log('the marker ->' + (map.markers[pos].b.s) + ' was clicked');
+            });*/
+        }
 
         that.PopulateLeaderboard = function() {
             var count = 0;
@@ -153,7 +153,9 @@
             //    var idx = behandeld.indexOf(that.segments[count].id);
                 //console.log(behandeld.indexOf(that.segments[count].id));
                 var dist = that.segments[count].distance;
-                if (dist > $scope.mindistval && dist < $scope.maxdistval) {
+                var idx = that.behandeld.indexOf(that.segments[count].id);
+                if (dist > $scope.mindistval && dist < $scope.maxdistval && idx == -1) {
+                    that.behandeld.push(that.segments[count].id);
                     AthleteFactory.getLeaderboard(that.segments[count])
                         .then(function updateLeaderboard(response, headers) {
                             var direction = (google.maps.geometry.spherical.computeHeading(new google.maps.LatLng(response.config.end_latlng[0],response.config.end_latlng[1]), new google.maps.LatLng(response.config.start_latlng[0],response.config.start_latlng[1]))).toFixed(0);
@@ -179,27 +181,6 @@
             }
         };
 
-        that.getDegrees = function(lat1, long1, lat2, long2, headX) {
-
-            var dLat = toRad(lat2-lat1);
-            var dLon = toRad(lon2-lon1);
-
-            lat1 = toRad(lat1);
-            lat2 = toRad(lat2);
-
-            var y = Math.sin(dLon) * Math.cos(lat2);
-            var x = Math.cos(lat1)*Math.sin(lat2) -
-                Math.sin(lat1)*Math.cos(lat2)*Math.cos(dLon);
-            var brng = toDeg(Math.atan2(y, x));
-
-            // fix negative degrees
-            if(brng<0) {
-                brng=360-Math.abs(brng);
-            }
-
-            return brng - headX;
-        }
-
         that.toggleSelection = function(leaderboard) {
             //console.log("test")
             var idx = that.selection.indexOf(leaderboard);
@@ -224,47 +205,6 @@
             p2 = p2.replace(/"lng":/g,"");
             return(p2);
         };
-
-        that.test2 = function() {
-            //console.log(that.bearing(51.3992,5.33873,51.384894,5.323158));
-            //var path = [[51.3992,5.33873], [51.384894,5.323158]];
-            var path = [];
-            path.push(new google.maps.LatLng(51.3992,5.33873));
-            path.push(new google.maps.LatLng(51.384894,5.323158));
-
-            var heading = google.maps.geometry.spherical.computeHeading(path[0], path[1]);
-            console.log(heading);
-            console.log(360 + google.maps.geometry.spherical.computeHeading(new google.maps.LatLng(51.3992,5.33873), new google.maps.LatLng(51.384894,5.323158)))
-            // AthleteFactory.getWind(51.446757, 5.43491)
-           //     .then(UpdateWind)
-        };
-
-        function UpdateWind(response) {
-           // console.log(JSON.stringify(response.data.wind.deg));
-            that.wind = JSON.stringify(response.data.wind.deg);
-        }
-
-        that.bearing = function(lat1,lng1,lat2,lng2) {
-            var dLon = (lng2-lng1);
-            var y = Math.sin(dLon) * Math.cos(lat2);
-            var x = Math.cos(lat1)*Math.sin(lat2) - Math.sin(lat1)*Math.cos(lat2)*Math.cos(dLon);
-            var brng = that._toDeg(Math.atan2(y, x));
-            //console.log(360 - ((brng + 360) % 360));
-            return 360 - ((brng + 360) % 360);
-        }
-
-        that._toRad = function(deg) {
-            return deg * Math.PI / 180;
-        }
-
-        that._toDeg = function(rad) {
-            return rad * 180 / Math.PI;
-        }
-
-
-        function updateAthleteInfo(response) {
-            that.athleteInfo = response.data;
-        }
 
 
         init();
