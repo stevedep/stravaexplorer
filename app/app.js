@@ -1,5 +1,5 @@
 ﻿(function() {
-    var app = angular.module('strvr', ['ngRoute', 'ngMap', 'ngMaterial'] );
+    var app = angular.module('strvr', ['ngRoute', 'ngMap', 'ngMaterial', 'ngStorage'] );
 
     app.config(function($routeProvider) {
         $routeProvider

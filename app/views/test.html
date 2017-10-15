@@ -10,12 +10,53 @@
     </div>
 </div>
 </div>
-<table><tr valign="top"><td valign="top">
+<table>
+    <tr><td>
+        <md-slider-container>
+            <span>Min Speed</span>
+            <md-slider flex="" min="25" max="55" default="45" ng-model="minspeedval" aria-label="red" id="red-slider"></md-slider>
+            <md-input-container>
+                <input flex="" type="number" ng-model="minspeedval" aria-label="red" aria-controls="red-slider">
+            </md-input-container>
+        </md-slider-container>
+        <md-slider-container>
+            <span>Max Speed</span>
+            <md-slider flex="" min="25" max="70" default="45" ng-model="speedval" aria-label="red" id="red-slider"></md-slider>
+            <md-input-container>
+                <input flex="" type="number" ng-model="speedval" aria-label="red" aria-controls="red-slider">
+            </md-input-container>
+        </md-slider-container>
+        <md-slider-container>
+            <span>Min Distance</span>
+            <md-slider flex="" min="100" max="8000" default="400" ng-model="mindistval" aria-label="red" id="red-slider"></md-slider>
+            <md-input-container>
+                <input flex="" type="number" ng-model="mindistval" aria-label="red" aria-controls="red-slider">
+            </md-input-container>
+        </md-slider-container>
+        <td>
+        <md-slider-container>
+            <span>Max Distance</span>
+            <md-slider flex="" min="300" max="8000" default="5000" ng-model="maxdistval" aria-label="red" id="red-slider"></md-slider>
+            <md-input-container>
+                <input flex="" type="number" ng-model="maxdistval" aria-label="red" aria-controls="red-slider">
+            </md-input-container>
+        </md-slider-container>
+        <md-slider-container>
+            <span>Minimal windsupport</span>
+            <md-slider flex="" min="0" max="100" ng-model="minwindsupport" aria-label="red" id="red-slider"></md-slider>
+            <md-input-container>
+                <input flex="" type="number" ng-model="minwindsupport" aria-label="red" aria-controls="red-slider">
+            </md-input-container>
+        </md-slider-container></td>
+    </td></tr>
+    <tr valign="top"><td valign="top">
     <button ng-click="ac.getbounds()" >Get Segments</button>
     <button ng-click="ac.test2()" >Test</button>
+    <button ng-click="ac.saveData()" >Save</button>
+    <button ng-click="ac.loadData()" >Load</button>
     <ng-map id="foomap" style="height:800px;width:800px;" center={{ac.center}} zoom="14">
         <marker id={{s.idd}} ng-repeat="s in ac.leaderboard | filter:speedf" position="{{s.pos}}"  title="{{s.segmentname }}" on-click="showCity(event, s)" icon="https://mt.googleapis.com/vt/icon/name=icons/onion/39-cycling.png"></marker>
-        <info-window id="myInfoWindow" >
+        <info-window id="myInfoWindow" position="{{selectedCity.start_latlng}}">
             <div ng-non-bindable>
                 <h4>{{selectedCity.segmentname}}</h4>
                 <br>
@@ -32,7 +73,10 @@
 
             </div>
         </info-window>
-        <shape ng-repeat="s in ac.leaderboard | filter:speedf" name="polyline" path="{{s.points}}" geodesic="true" stroke-color="rgb(0,{{
+        <shape ng-repeat="s in ac.leaderboard | filter:speedf" name="polyline" path="{{s.points}}" geodesic="true" stroke-color="rgb({{
+        255 - ((((speedval - (((s.entries[0].distance / s.entries[0].elapsed_time) * 3600)/1000  ).toFixed(2)) /
+    (speedval - minspeedval)) * 255).toFixed(0).toString())
+        }},{{
 
 (((speedval - (((s.entries[0].distance / s.entries[0].elapsed_time) * 3600)/1000  ).toFixed(2)) /
     (speedval - minspeedval)) * 255).toFixed(0).toString()
@@ -56,43 +100,29 @@
 
         </ng-map>
 </td><td>
-    <md-slider-container>
-        <span>Min Speed</span>
-        <md-slider flex="" min="25" max="55" default="45" ng-model="minspeedval" aria-label="red" id="red-slider"></md-slider>
-        <md-input-container>
-            <input flex="" type="number" ng-model="minspeedval" aria-label="red" aria-controls="red-slider">
-        </md-input-container>
-    </md-slider-container>
-    <md-slider-container>
-        <span>Max Speed</span>
-        <md-slider flex="" min="25" max="70" default="45" ng-model="speedval" aria-label="red" id="red-slider"></md-slider>
-        <md-input-container>
-            <input flex="" type="number" ng-model="speedval" aria-label="red" aria-controls="red-slider">
-        </md-input-container>
-    </md-slider-container>
-    <md-slider-container>
-        <span>Min Distance</span>
-        <md-slider flex="" min="100" max="8000" default="400" ng-model="mindistval" aria-label="red" id="red-slider"></md-slider>
-        <md-input-container>
-            <input flex="" type="number" ng-model="mindistval" aria-label="red" aria-controls="red-slider">
-        </md-input-container>
-    </md-slider-container>
-    <md-slider-container>
-        <span>Max Distance</span>
-        <md-slider flex="" min="300" max="8000" default="5000" ng-model="maxdistval" aria-label="red" id="red-slider"></md-slider>
-        <md-input-container>
-            <input flex="" type="number" ng-model="maxdistval" aria-label="red" aria-controls="red-slider">
-        </md-input-container>
-    </md-slider-container>
-    <md-slider-container>
-        <span>Minimal windsupport</span>
-        <md-slider flex="" min="0" max="100" ng-model="minwindsupport" aria-label="red" id="red-slider"></md-slider>
-        <md-input-container>
-            <input flex="" type="number" ng-model="minwindsupport" aria-label="red" aria-controls="red-slider">
-        </md-input-container>
-    </md-slider-container>
 
-    <table class="features-table" id="activitiesTable" class="table">
+
+    <ng-map zoom="24" center="{{selectedCity.start_latlng}}"
+            default-style="false"
+            style="height:600px;width:800px;"
+            map-type-id="MapTypeId.SATELLITE" tilt="45">
+        <shape name="polyline" path="{{selectedCity.points}}" geodesic="true" stroke-color="rgb(255,0,0)" stroke-opacity="1.0" stroke-weight="2">
+        </shape>
+        <street-view-panorama container="streetview">
+        </street-view-panorama>
+    </ng-map>
+
+        <table class="features-table" id="timeTable" class="table">
+            <tr ng-repeat="n in selectedCity.entries | orderBy : '-(((n.distance / n.elapsed_time) * 3600)/1000  ).toFixed(2)'">
+                <td>{{ n.athlete_name }}</td>
+                <td>{{ n.distance }}</td>
+                <td>{{ n.elapsed_time}}</td>
+                <td>{{ (((selectedCity.sdistance / n.elapsed_time) * 3600)/1000  ).toFixed(2) }}</td>
+                </td>
+            </tr>
+        </table>
+
+        <table class="features-table" id="activitiesTable" class="table">
         <tr ng-repeat="n in ac.leaderboard | filter:speedf |  orderBy : 'entries[0].distance / entries[0].elapsed_time'">
             <td> <input
                     id="{{n.segmentname}}" type="checkbox" value="{{n.segmentname}}"
@@ -104,5 +134,9 @@
 
             <td>{{ (((n.entries[0].distance / n.entries[0].elapsed_time) * 3600)/1000  ).toFixed(2) }}</td>
         </tr>
-    </table></td></tr></table>
+    </table></td>
+
+
+
+</tr></table>
 

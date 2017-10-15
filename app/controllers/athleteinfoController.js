@@ -3,7 +3,7 @@
 
     app.controller('AthleteInfoController', AthleteInfoController);
 
-    function AthleteInfoController($scope, AthleteFactory, NgMap) {
+    function AthleteInfoController($scope, AthleteFactory, NgMap, $localStorage) {
 
 
         var that = this;
@@ -21,14 +21,24 @@
         that.center = "[51.438559, 5.414102]";
         that.athleteInfo = [];
 
+
+        that.saveData = function(){
+            $localStorage.leaderboard = that.leaderboard;
+        }
+
+        that.loadData = function(){
+            that.leaderboard = $localStorage.leaderboard;
+        }
+
         function init() {
             //that.PopulateSegments();
             $scope.speedval = 45;
             $scope.minspeedval = 37;
             $scope.mindistval = 300;
-            $scope.maxdistval = 6000;
+            $scope.maxdistval = 2000;
             $scope.maxelaval = 100;
             $scope.minwindsupport = 1;
+
         }
 
         that.PopulateSegments = function(area) {
@@ -80,7 +90,7 @@
             //console.log('start');
             AthleteFactory.getWind(51.446757, 5.43491)
                 .then(UpdateWind)
-            NgMap.getMap().then(function (map) {
+            NgMap.getMap({id:'foomap'}).then(function (map) {
                 that.positions = [];
                 that.eara = [];
                 //  X = Longitude, Y = Latitude
@@ -149,8 +159,18 @@
 
         $scope.showCity = function(event, city) {
             $scope.selectedCity = city;
-            $scope.map.showInfoWindow('myInfoWindow', this);
+           // that.map[0].showInfoWindow('myInfoWindow', this);
+           // console.log(JSON.stringify(that.map))
+            /*NgMap.getMap({id:'foomap'}).then(function (map) {
+                map.showInfoWindow('myInfoWindow',this);
+            })
+*/
+
+
         };
+
+
+
 
         that.pinClicked = function(events, s) {
             console.log(s);
@@ -188,8 +208,8 @@
                                 {pos: response.config.pos},
                                 {start_latlng: response.config.start_latlng},
                                 {end_latlng: response.config.end_latlng},
-                                { windsupport : ((1 - (Math.abs((that.wind - (direction))))/360)* 100).toFixed(0)},
-                                { direction : direction},
+                                {windsupport : ((1 - (Math.abs((that.wind - (direction))))/360)* 100).toFixed(0)},
+                                {direction : direction},
                                 {points2: response.config.points},
                                 {points: that.createpath2(JSON.stringify(google.maps.geometry.encoding.decodePath(response.config.points)))}
                                 , response.data);
@@ -202,7 +222,7 @@
 
 
         that.test2 = function(){
-            NgMap.getMap().then(function (map) {
+            NgMap.getMap({id:'foomap'}).then(function (map) {
              that.zoom = map.getZoom();
             }  )
 
