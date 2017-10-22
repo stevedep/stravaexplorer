@@ -1,11 +1,13 @@
 ﻿
 <div class='form-group row'>
     <div class="col-xs-12">
-        <h1>Wind: {{ ac.wind }}</h1><br>
         <h1> Zoom: {{ ac.zoom }}</h1><br>
+ <!--
+
+        <h1>Wind: {{ ac.wind }}</h1><br>
+
         <h1> API calls: {{ ac.apicalls}}</h1><br>
-
-
+/-->
 
     </div>
 </div>
@@ -54,35 +56,32 @@
     <button ng-click="ac.test2()" >Test</button>
     <button ng-click="ac.saveData()" >Save</button>
     <button ng-click="ac.loadData()" >Load</button>
+    </td>
+    <td>{{selectedCity.segmentname}}</td></tr>
+    <tr><td valign="top">
     <ng-map id="foomap" style="height:800px;width:800px;" center={{ac.center}} zoom="14">
         <marker id={{s.idd}} ng-repeat="s in ac.leaderboard | filter:speedf" position="{{s.pos}}"  title="{{s.segmentname }}" on-click="showCity(event, s)" icon="https://mt.googleapis.com/vt/icon/name=icons/onion/39-cycling.png"></marker>
         <info-window id="myInfoWindow" position="{{selectedCity.start_latlng}}">
             <div ng-non-bindable>
                 <h4>{{selectedCity.segmentname}}</h4>
                 <br>
-
                 <table class="features-table" id="timeTable" class="table">
                     <tr ng-repeat="n in selectedCity.entries | orderBy : '-(((n.distance / n.elapsed_time) * 3600)/1000  ).toFixed(2)'">
                         <td>{{ n.athlete_name }}</td>
-                        <td>{{ n.distance }}</td>
-                        <td>{{ n.elapsed_time}}</td>
                         <td>{{ (((selectedCity.sdistance / n.elapsed_time) * 3600)/1000  ).toFixed(2) }}</td>
                         </td>
                     </tr>
                 </table>
-
             </div>
         </info-window>
         <shape ng-repeat="s in ac.leaderboard | filter:speedf" name="polyline" path="{{s.points}}" geodesic="true" stroke-color="rgb({{
         255 - ((((speedval - (((s.entries[0].distance / s.entries[0].elapsed_time) * 3600)/1000  ).toFixed(2)) /
     (speedval - minspeedval)) * 255).toFixed(0).toString())
         }},{{
-
 (((speedval - (((s.entries[0].distance / s.entries[0].elapsed_time) * 3600)/1000  ).toFixed(2)) /
     (speedval - minspeedval)) * 255).toFixed(0).toString()
         }},0)" stroke-opacity="1.0" stroke-weight="2">
         </shape>
-
         <!--
           <shape ng-repeat="a in ac.area" name="rectangle"
                  stroke-color="#FF0000"
@@ -95,46 +94,56 @@
              [{{a.nela}}, {{a.nelng}}]
            ]">
 /-->
-
           </shape>
 
         </ng-map>
-</td><td>
+</td><td valign="top" align="right">
 
-
-    <ng-map zoom="24" center="{{selectedCity.start_latlng}}"
-            default-style="false"
-            style="height:600px;width:800px;"
-            map-type-id="MapTypeId.SATELLITE" tilt="45">
-        <shape name="polyline" path="{{selectedCity.points}}" geodesic="true" stroke-color="rgb(255,0,0)" stroke-opacity="1.0" stroke-weight="2">
-        </shape>
-        <street-view-panorama container="streetview">
-        </street-view-panorama>
-    </ng-map>
-
-        <table class="features-table" id="timeTable" class="table">
-            <tr ng-repeat="n in selectedCity.entries | orderBy : '-(((n.distance / n.elapsed_time) * 3600)/1000  ).toFixed(2)'">
-                <td>{{ n.athlete_name }}</td>
-                <td>{{ n.distance }}</td>
-                <td>{{ n.elapsed_time}}</td>
-                <td>{{ (((selectedCity.sdistance / n.elapsed_time) * 3600)/1000  ).toFixed(2) }}</td>
-                </td>
-            </tr>
-        </table>
-
-        <table class="features-table" id="activitiesTable" class="table">
+      <table class="features-table" id="timeTable" class="table" align="right">
+        <tr ng-repeat="n in selectedCity.entries | orderBy : '-(((n.distance / n.elapsed_time) * 3600)/1000  ).toFixed(2)'">
+            <td align="right">{{ n.athlete_name }}</td>
+            <td align="right">{{ (((selectedCity.sdistance / n.elapsed_time) * 3600)/1000  ).toFixed(2) }}</td>
+            </td>
+        </tr>
+    </table> <table class="features-table" id="activitiesTable" class="table">
         <tr ng-repeat="n in ac.leaderboard | filter:speedf |  orderBy : 'entries[0].distance / entries[0].elapsed_time'">
             <td> <input
                     id="{{n.segmentname}}" type="checkbox" value="{{n.segmentname}}"
                     ng-checked="0"
-                    ng-click="ac.toggleSelection(n)" /></td>
-            <td><a href="https://www.strava.com/segments/{{n.idd}}">{{ n.segmentname }}</a></td>
+                    ng-click="ac.toggleSelection(n)" />
+           <a href="https://www.strava.com/segments/{{n.idd}}">{{ n.segmentname }}</a></td>
             <td>{{ n.windsupport }}</td>
-           <!-- <td>{{ n.direction }}</td> /-->
+            <!-- <td>{{ n.direction }}</td> /-->
 
             <td>{{ (((n.entries[0].distance / n.entries[0].elapsed_time) * 3600)/1000  ).toFixed(2) }}</td>
         </tr>
-    </table></td>
+    </table>
+    </td><td valign="top" align="right">
+        <ng-map id="2" zoom="24" center="{{selectedCity.start_latlng}}"
+                default-style="false"
+                style="height:600px;width:800px;"
+                map-type-id="MapTypeId.SATELLITE" tilt="45">
+            <shape name="polyline" path="{{selectedCity.points}}" geodesic="true" stroke-color="rgb(255,0,0)" stroke-opacity="1.0" stroke-weight="2">
+            </shape>
+        </ng-map>
+       {{ ac.returnlatlng(selectedCity.start_latlng)}}
+        <ng-map id="3" zoom="20" center="40.740, -74.18" >
+
+            <street-view-panorama
+                    click-to-go="false"
+                    disable-default-u-i="false"
+                    disable-double-click-zoom="false"
+                    pov="{heading: heading, pitch: pitch}"
+                    scrollwheel="false"
+                    enable-close-button="true"
+                    visible="true">
+            </street-view-panorama>
+
+        </ng-map>
+
+    </td>
+        <tr>
+      </td>
 
 
 

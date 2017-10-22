@@ -1,12 +1,18 @@
 /* Styles go here */
 .h1 {
     color: #fff;
-    font-family: 'Righteous', cursive; font-size: 65px; font-weight: normal; line-height: 60px; margin: 10px 0 20px; text-transform: uppercase; margin: 10px 0 24px; text-align: center; }
+    font-family: 'sans-serif', cursive; font-size: 65px; font-weight: normal; line-height: 60px; margin: 10px 0 20px; text-transform: uppercase; margin: 10px 0 24px; text-align: center; }
 
 .ng-map-info-window {
     background-color: whitesmoke;
     color: #fff;
 }
+
+.html {
+    font-family: Sans-Serif;
+    background-color: whitesmoke;
+}
+
 .ng-map-info-window div:first-child > div:nth-child(1) {
     border-top-color: white !important;
 }
@@ -18,7 +24,7 @@
 }
 
 .features-table {
-    width: 400px;
+    width: 200px;
     margin: 0 auto;
     border-collapse: separate;
     border-spacing: 0;
@@ -42,7 +48,7 @@
 .features-table tbody td {
     text-align: center;
     font: normal 12px Verdana, Arial, Helvetica;
-    width: 150px;
+    width: 60px;
 }
 
 .features-table tbody td:first-child {

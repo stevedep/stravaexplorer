@@ -5,7 +5,6 @@
 
     function AthleteInfoController($scope, AthleteFactory, NgMap, $localStorage) {
 
-
         var that = this;
         that.apicalls;
         that.wind;
@@ -22,12 +21,39 @@
         that.athleteInfo = [];
 
 
+        that.returnlatlng = function(ll) {
+            return new google.maps.LatLng(ll[0],ll[1])
+        }
+
+        that.test2 = function(){
+               NgMap.getMap({id:'3'}).then(function (map) {
+
+
+                   that.zoom = map.getZoom();
+                   var placeLocation = that.returnlatlng($scope.selectedCity.start_latlng);
+                   map.setCenter(placeLocation)
+                   var mapSV = map.getStreetView();
+                   map.setCenter(placeLocation);
+                   mapSV.setPosition(placeLocation);
+                   mapSV.setVisible(true);
+                   //returnlatlng(selectedCity.start_latlng
+               }  )
+         //   console.log(JSON.stringify(that.leaderboard))
+          //  that.leaderboard = JSON.parse(JSON.stringify(that.leaderboard))
+        }
+
         that.saveData = function(){
-            $localStorage.leaderboard = that.leaderboard;
+            //alert("salve")
+            //localStorage.leaderboard = that.leaderboard;
+          //  console.log(JSON.stringify(that.leaderboard));
+            localStorage.setItem('testObject', JSON.stringify(that.leaderboard));
         }
 
         that.loadData = function(){
-            that.leaderboard = $localStorage.leaderboard;
+            that.leaderboard = JSON.parse(localStorage.getItem('testObject'));
+           // that.leaderboard = JSON.stringify(localStorage.leaderboard);
+
+          //   console.log(JSON.stringify(that.leaderboard))
         }
 
         function init() {
@@ -67,11 +93,11 @@
 
         $scope.speedf = function(n){
             var speed = (((n.entries[0].distance / n.entries[0].elapsed_time) * 3600)/1000  );
-
+            var windsupport = ((1 - (Math.abs((that.wind - (n.direction))))/360)* 100).toFixed(0);
             //console.log(JSON.stringify(n.entries[0]))
             //console.log($scope.minspeedval)
             //console.log($scope.speedval)
-            if ( speed > $scope.minspeedval && speed < $scope.speedval && n.windsupport > $scope.minwindsupport) {
+            if ( speed > $scope.minspeedval && speed < $scope.speedval && windsupport > $scope.minwindsupport) {
                 return true;
             } else {
                 return false;
@@ -221,12 +247,7 @@
         };
 
 
-        that.test2 = function(){
-            NgMap.getMap({id:'foomap'}).then(function (map) {
-             that.zoom = map.getZoom();
-            }  )
 
-        }
         that.toggleSelection = function(leaderboard) {
             //console.log("test")
             var idx = that.selection.indexOf(leaderboard);
