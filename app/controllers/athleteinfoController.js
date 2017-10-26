@@ -16,16 +16,54 @@
         that.area=[];
         that.positions = [];
         that.leaderboard = [];
+        that.leaderboard2 = [];
         that.gehad = [];
         that.center = "[51.438559, 5.414102]";
         that.athleteInfo = [];
 
 
-        that.returnlatlng = function(ll) {
+       that.returnlatlng = function(ll) {
             return new google.maps.LatLng(ll[0],ll[1])
         }
 
+        that.test3 = function() {
+            NgMap.getMap({id:'3'}).then(function (map) {
+
+
+                that.zoom = map.getZoom();
+                var placeLocation = that.returnlatlng($scope.selectedCity.start_latlng);
+                map.setCenter(placeLocation)
+                var mapSV = map.getStreetView();
+                map.setCenter(placeLocation);
+                mapSV.setPosition(placeLocation);
+                mapSV.setVisible(true);
+                //returnlatlng(selectedCity.start_latlng
+            }  )
+
+        }
+        that.test4 = function() {
+            localStorage.setItem('testObject', JSON.stringify(that.leaderboard));
+            localStorage.setItem('behandeldObject', JSON.stringify(that.behandeld));
+        }
+        that.test5 = function() {
+that.leaderboard = []
+       that.behandeld =[]
+       }
+
         that.test2 = function(){
+            that.leaderboard = JSON.parse(localStorage.getItem('testObject'));
+
+
+            //that.leaderboard2.push(that.temp[1])
+            //var count = 0;
+            /*  while (count < test.length) {
+                  that.leaderboard.push(that.test[count])
+                  count++
+              }*/
+           // console.log(test[0])
+
+            //that.PopulateLeaderboard();
+            /*
                NgMap.getMap({id:'3'}).then(function (map) {
 
 
@@ -36,8 +74,12 @@
                    map.setCenter(placeLocation);
                    mapSV.setPosition(placeLocation);
                    mapSV.setVisible(true);
+                   mapSV.setPov(/!** @type {google.maps.StreetViewPov} *!/({
+                       heading: $scope.selectedCity.direction,
+                       pitch: 0
+                   }));
                    //returnlatlng(selectedCity.start_latlng
-               }  )
+               }  )*/
          //   console.log(JSON.stringify(that.leaderboard))
           //  that.leaderboard = JSON.parse(JSON.stringify(that.leaderboard))
         }
@@ -51,19 +93,36 @@
 
         that.loadData = function(){
             that.leaderboard = JSON.parse(localStorage.getItem('testObject'));
-           // that.leaderboard = JSON.stringify(localStorage.leaderboard);
+            $scope.leaderboard = JSON.parse(localStorage.getItem('testObject'));
+            console.log(that.leaderboard);
+            // that.leaderboard = JSON.stringify(localStorage.leaderboard);
 
           //   console.log(JSON.stringify(that.leaderboard))
         }
 
         function init() {
             //that.PopulateSegments();
+          //  var test = JSON.parse(localStorage.getItem('testObject'));
+           // console.log(test);
+           // var count = 0;
+          /*  while (count < test.length) {
+                that.leaderboard.push(that.test[count])
+                count++
+            }*/
+           // console.log(test[0])
+
+                //that.leaderboard.push(test);
+            that.leaderboard = JSON.parse(localStorage.getItem('testObject'));
+            that.behandeld = JSON.parse(localStorage.getItem('behandeldObject'));
             $scope.speedval = 45;
             $scope.minspeedval = 37;
             $scope.mindistval = 300;
             $scope.maxdistval = 2000;
             $scope.maxelaval = 100;
             $scope.minwindsupport = 1;
+            AthleteFactory.getWind(51.446757, 5.43491)
+                .then(UpdateWind)
+
 
         }
 
@@ -110,12 +169,10 @@
             that.segments.length = 0;
             //that.leaderboard.length = 0;
             that.area=[];
-            that.behandeld=[];
+            //that.behandeld=[];
             //console.log($scope.segments);
             //console.log(that.segments.length);
             //console.log('start');
-            AthleteFactory.getWind(51.446757, 5.43491)
-                .then(UpdateWind)
             NgMap.getMap({id:'foomap'}).then(function (map) {
                 that.positions = [];
                 that.eara = [];
@@ -176,6 +233,8 @@
                     .then(that.PopulateLeaderboard)
             });
 
+
+
         }
 
         function UpdateWind(response) {
@@ -190,7 +249,10 @@
             /*NgMap.getMap({id:'foomap'}).then(function (map) {
                 map.showInfoWindow('myInfoWindow',this);
             })
+
 */
+
+            that.test3();
 
 
         };
@@ -244,6 +306,7 @@
                 }
                 count++;
             }
+
         };
 
 

@@ -2,6 +2,7 @@
 <div class='form-group row'>
     <div class="col-xs-12">
         <h1> Zoom: {{ ac.zoom }}</h1><br>
+        <h1>{{ac.test[0].idd}}</h1>
  <!--
 
         <h1>Wind: {{ ac.wind }}</h1><br>
@@ -53,9 +54,9 @@
     </td></tr>
     <tr valign="top"><td valign="top">
     <button ng-click="ac.getbounds()" >Get Segments</button>
-    <button ng-click="ac.test2()" >Test</button>
-    <button ng-click="ac.saveData()" >Save</button>
-    <button ng-click="ac.loadData()" >Load</button>
+
+        <button ng-click="ac.test4()" >save</button>
+        <button ng-click="ac.test5()" >clear</button>
     </td>
     <td>{{selectedCity.segmentname}}</td></tr>
     <tr><td valign="top">
@@ -105,7 +106,13 @@
             <td align="right">{{ (((selectedCity.sdistance / n.elapsed_time) * 3600)/1000  ).toFixed(2) }}</td>
             </td>
         </tr>
-    </table> <table class="features-table" id="activitiesTable" class="table">
+
+
+
+
+    </table>
+
+        <table class="features-table" id="activitiesTable" class="table">
         <tr ng-repeat="n in ac.leaderboard | filter:speedf |  orderBy : 'entries[0].distance / entries[0].elapsed_time'">
             <td> <input
                     id="{{n.segmentname}}" type="checkbox" value="{{n.segmentname}}"
