@@ -244,6 +244,7 @@ that.leaderboard = []
 
         $scope.showCity = function(event, city) {
             $scope.selectedCity = city;
+
            // that.map[0].showInfoWindow('myInfoWindow', this);
            // console.log(JSON.stringify(that.map))
             /*NgMap.getMap({id:'foomap'}).then(function (map) {
@@ -299,6 +300,7 @@ that.leaderboard = []
                                 {windsupport : ((1 - (Math.abs((that.wind - (direction))))/360)* 100).toFixed(0)},
                                 {direction : direction},
                                 {points2: response.config.points},
+                                {points3: JSON.parse(that.createpath2(JSON.stringify(google.maps.geometry.encoding.decodePath(response.config.points))))},
                                 {points: that.createpath2(JSON.stringify(google.maps.geometry.encoding.decodePath(response.config.points)))}
                                 , response.data);
                             that.leaderboard.push(newJson);

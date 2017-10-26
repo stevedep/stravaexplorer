@@ -134,6 +134,7 @@
                 </tr>
                 </table></td>
             <td width="1000px" height="500px">
+                {{selectedCity.points3[0]}}
                 <ng-map id="3" zoom="20" center="40.740, -74.18"  style="height:500px;width:1050px;">
                     <street-view-panorama
                             click-to-go="false"
@@ -144,6 +145,8 @@
                             enable-close-button="true"
                             visible="true">
                     </street-view-panorama>
+                    <marker ng-repeat="n in [1,2,3,4,5,6,7,8,9,10]" position="{{selectedCity.points3[ (n * (selectedCity.points3.length/10)).toFixed(0) ]}}"></marker>
+
                 </ng-map>
             </td>
         </tr>
